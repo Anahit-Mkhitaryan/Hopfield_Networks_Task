@@ -2,7 +2,6 @@ import java.io.*;
 import java.util.StringTokenizer;
 
 public class CourseArray {
-
 	private Course elements[];
 	private int period;
 	
@@ -11,6 +10,25 @@ public class CourseArray {
 		elements = new Course[numOfCourses];
 		for (int i = 1; i < elements.length; i++) 
 			elements[i] = new Course();
+	}
+
+	public int[] getTimeSlot(int index) {
+		// Initialize an array representing whether each course is in the same time slot
+		int[] timeslot = new int[elements.length];
+
+		// Retrieve the slot number of the specified course
+		int targetSlot = slot(index);
+
+		// Loop through each course and check if it matches the specified time slot
+		for (int i = 0; i < elements.length; i++) {
+			if (slot(i) == targetSlot) {
+				timeslot[i] = 1; // Course is in the target slot
+			} else {
+				timeslot[i] = -1; // Course is not in the target slot
+			}
+		}
+
+		return timeslot;
 	}
 	
 	public void readClashes(String filename) {

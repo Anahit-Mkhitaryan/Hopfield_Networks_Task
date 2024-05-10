@@ -1,43 +1,81 @@
+import java.util.Random;
+
 public class Autoassociator {
 	private int weights[][];
 	private int trainingCapacity;
-	
+	private int numNeurons;
+	private Random random;
+
+	// Constructor initializes the weights matrix and other properties
 	public Autoassociator(CourseArray courses) {
-		// TO DO
-		// creates a new Hopfield network with the same number of neurons 
-		// as the number of courses in the input CourseArray
+		numNeurons = courses.length(); // Adjusted to use the `length` method
+		weights = new int[numNeurons][numNeurons];
+		trainingCapacity = (int) (0.15 * numNeurons); // Approximate rule of thumb for Hopfield networks
+		random = new Random();
 	}
-	
+
+	// getTrainingCapacity returns the maximum number of patterns the network can learn
 	public int getTrainingCapacity() {
-		// TO DO
-		
-		return 0;
+		return trainingCapacity;
 	}
-	
+
+	// training trains the network with a given binary pattern using the Hebbian learning rule
 	public void training(int pattern[]) {
-		// TO DO
+		for (int i = 0; i < numNeurons; i++) {
+			for (int j = 0; j < numNeurons; j++) {
+				if (i != j) {
+					weights[i][j] += pattern[i] * pattern[j];
+				}
+			}
+		}
 	}
-	
+
+	// Updates a random neuron based on the sum of weighted inputs
 	public int unitUpdate(int neurons[]) {
-		// TO DO
-		// implements a single update step and
-		// returns the index of the randomly selected and updated neuron
-		
-		return 0;
+		int index = random.nextInt(numNeurons);
+		unitUpdate(neurons, index);
+		return index;
 	}
-	
+
+	// Updates a specific neuron by index
 	public void unitUpdate(int neurons[], int index) {
-		// TO DO
-		// implements the update step of a single neuron specified by index
+		int sum = 0;
+		for (int j = 0; j < numNeurons; j++) {
+			if (j != index) {
+				sum += weights[index][j] * neurons[j];
+			}
+		}
+		neurons[index] = sum >= 0 ? 1 : -1;
 	}
-	
+
+	// Performs a series of random unit updates
 	public void chainUpdate(int neurons[], int steps) {
-		// TO DO
-		// implements the specified number od update steps
+		for (int i = 0; i < steps; i++) {
+			unitUpdate(neurons);
+		}
 	}
-	
+
+	// Updates all neurons until a stable state is achieved
 	public void fullUpdate(int neurons[]) {
-		// TO DO
-		// updates the input until the final state achieved
+		boolean stable;
+		int[] previousState = new int[numNeurons];
+
+		do {
+			stable = true;
+			System.arraycopy(neurons, 0, previousState, 0, numNeurons);
+
+			for (int i = 0; i < numNeurons; i++) {
+				unitUpdate(neurons, i);
+			}
+
+			// Check if state has stabilized
+			for (int i = 0; i < numNeurons; i++) {
+				if (neurons[i] != previousState[i]) {
+					stable = false;
+					break;
+				}
+			}
+		} while (!stable);
 	}
 }
+
