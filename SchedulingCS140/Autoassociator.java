@@ -3,79 +3,81 @@ import java.util.Random;
 public class Autoassociator {
 	private int weights[][];
 	private int trainingCapacity;
-	private int numNeurons;
-	private Random random;
+	private Random random = new Random();
 
-	// Constructor initializes the weights matrix and other properties
 	public Autoassociator(CourseArray courses) {
-		numNeurons = courses.length(); // Adjusted to use the `length` method
-		weights = new int[numNeurons][numNeurons];
-		trainingCapacity = (int) (0.15 * numNeurons); // Approximate rule of thumb for Hopfield networks
-		random = new Random();
+		// creates a new Hopfield network with the same number of neurons
+		// as the number of courses in the input CourseArray
+		weights = new int[courses.length()][courses.length()];
+		trainingCapacity = (int) (0.14 * weights.length);
 	}
 
-	// getTrainingCapacity returns the maximum number of patterns the network can learn
 	public int getTrainingCapacity() {
 		return trainingCapacity;
 	}
 
-	// training trains the network with a given binary pattern using the Hebbian learning rule
 	public void training(int pattern[]) {
-		for (int i = 0; i < numNeurons; i++) {
-			for (int j = 0; j < numNeurons; j++) {
-				if (i != j) {
-					weights[i][j] += pattern[i] * pattern[j];
+		if (pattern.length == weights.length && trainingCapacity > 0) {
+			int prod;
+			for (int i = 0; i < pattern.length - 1; i++) {
+				for (int j = i+1; j < pattern.length; j++) {
+					prod = pattern[i] * pattern[j];
+					weights[i][j] += prod;
+					weights[j][i] += prod;
 				}
+			trainingCapacity--;
 			}
 		}
+		// TO DO
 	}
 
-	// Updates a random neuron based on the sum of weighted inputs
 	public int unitUpdate(int neurons[]) {
-		int index = random.nextInt(numNeurons);
+		int index = random.nextInt(neurons.length);
 		unitUpdate(neurons, index);
 		return index;
 	}
 
-	// Updates a specific neuron by index
 	public void unitUpdate(int neurons[], int index) {
 		int sum = 0;
-		for (int j = 0; j < numNeurons; j++) {
-			if (j != index) {
-				sum += weights[index][j] * neurons[j];
-			}
-		}
+		for (int i = 0; i < neurons.length; i++)
+			sum += weights[index][i] * neurons[i];
 		neurons[index] = sum >= 0 ? 1 : -1;
 	}
 
-	// Performs a series of random unit updates
 	public void chainUpdate(int neurons[], int steps) {
-		for (int i = 0; i < steps; i++) {
+		// TO DO
+		// implements the specified number od update steps
+		for (; steps > 0; steps--) {
 			unitUpdate(neurons);
 		}
 	}
 
-	// Updates all neurons until a stable state is achieved
 	public void fullUpdate(int neurons[]) {
-		boolean stable;
-		int[] previousState = new int[numNeurons];
+		boolean changed = true;
+		int[] previousState = new int[neurons.length];
 
-		do {
-			stable = true;
-			System.arraycopy(neurons, 0, previousState, 0, numNeurons);
-
-			for (int i = 0; i < numNeurons; i++) {
-				unitUpdate(neurons, i);
+		while (changed) {
+			System.arraycopy(neurons, 0, previousState, 0, neurons.length);  // Copy current state to previousState
+			for (int i = 0; i < neurons.length; i++) {
+				unitUpdate(neurons, i);  // Update each neuron
 			}
-
-			// Check if state has stabilized
-			for (int i = 0; i < numNeurons; i++) {
+			changed = false;
+			for (int i = 0; i < neurons.length; i++) {
 				if (neurons[i] != previousState[i]) {
-					stable = false;
+					changed = true;  // Check if there has been any change
 					break;
 				}
 			}
-		} while (!stable);
+		}
 	}
+
 }
+
+
+/*
+* crs file ic last number is the number of courses
+* hardcode that number
+* stu file y usanoghneri vercrac ararkaneri hamarnery
+*
+* */
 
