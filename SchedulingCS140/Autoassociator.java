@@ -16,20 +16,24 @@ public class Autoassociator {
 		return trainingCapacity;
 	}
 
-	public void training(int pattern[]) {
+	public void training(int[] pattern) {
 		if (pattern.length == weights.length && trainingCapacity > 0) {
-			int prod;
-			for (int i = 0; i < pattern.length - 1; i++) {
-				for (int j = i+1; j < pattern.length; j++) {
-					prod = pattern[i] * pattern[j];
-					weights[i][j] += prod;
-					weights[j][i] += prod;
+			for (int i = 0; i < pattern.length; i++) {
+				for (int j = i + 1; j < pattern.length; j++) {
+					// Adjust weights based on whether the pattern elements are the same
+					if (pattern[i] == pattern[j]) {
+						weights[i][j] += 1;
+						weights[j][i] += 1;
+					} else {
+						weights[i][j] -= 1;
+						weights[j][i] -= 1;
+					}
 				}
-			trainingCapacity--;
 			}
+			trainingCapacity--;
 		}
-		// TO DO
 	}
+
 
 	public int unitUpdate(int neurons[]) {
 		int index = random.nextInt(neurons.length);

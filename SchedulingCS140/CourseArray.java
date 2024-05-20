@@ -13,6 +13,49 @@ public class CourseArray {
 			elements[i] = new Course();
 	}
 
+	public int[] createPatternForTraining() {
+		int[] pattern = new int[elements.length];
+		for (int i = 1; i < elements.length; i++) {
+			// Assuming that a slot with 0 clashes is what we consider as 'ideal'
+			// We mark it as 1 (active neuron), else -1 (inactive neuron)
+			pattern[i] = elements[i].clashSize() == 0 ? 1 : -1;
+		}
+		return pattern;
+	}
+
+
+	public Course getElement(int index) {
+		return elements[index];  // Retrieve a specific course
+	}
+
+	public int getPeriod() {
+		return period;  // Retrieve the number of slots
+	}
+
+	public int clashesAtSlot(int slot) {
+		int totalClashes = 0;
+		for (int i = 1; i < elements.length; i++) {
+			if (elements[i].mySlot == slot) {
+				totalClashes += elements[i].clashSize();
+			}
+		}
+		return totalClashes;  // Calculate total clashes for a given slot
+	}
+
+	public int[] getCurrentPattern() {
+		int[] pattern = new int[elements.length];
+		for (int i = 1; i < elements.length; i++) {
+			pattern[i] = elements[i].mySlot;
+		}
+		return pattern;
+	}
+
+	public void applyPattern(int[] pattern) {
+		for (int i = 1; i < elements.length; i++) {
+			elements[i].mySlot = pattern[i];
+		}
+	}
+
 	public int[] slotStatus(int slot) {
 		int result[] = new int[2];
 		for (int i=1; i < elements.length; i++)
@@ -39,6 +82,7 @@ public class CourseArray {
 		}
 		return pattern;
 	}
+
 
 	public void readClashes(String filename) {
 		try {
