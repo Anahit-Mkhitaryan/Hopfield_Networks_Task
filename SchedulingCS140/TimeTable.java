@@ -15,6 +15,8 @@ public class TimeTable extends JFrame implements ActionListener {
 		setSize(500, 800);
 		setLayout(new FlowLayout());
 
+		Logger.initLogger("TimeTableAutoassociatorLog.txt");
+
 		screen.setPreferredSize(new Dimension(400, 800));
 		add(screen);
 
@@ -22,6 +24,13 @@ public class TimeTable extends JFrame implements ActionListener {
 		add(tools);
 
 		setVisible(true);
+
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				Logger.close(); // Close the logger when the window closes
+			}
+		});
 	}
 
 	public void setTools() {
@@ -94,6 +103,8 @@ public class TimeTable extends JFrame implements ActionListener {
 					}
 				}
 				System.out.println("Shift = " + field[4].getText() + "\tMin clashes = " + min + "\tat step " + step);
+				Logger.log("Slots = " + field[0].getText() + "\tat shift " + field[4].getText() + "\tIterations " + field[3].getText());
+
 				setVisible(true);
 				break;
 			case 2:
@@ -104,6 +115,7 @@ public class TimeTable extends JFrame implements ActionListener {
 				System.out.println("Exam\tSlot\tClashes");
 				for (int i = 1; i < courses.length(); i++)
 					System.out.println(i + "\t" + courses.slot(i) + "\t" + courses.status(i));
+
 				break;
 			case 4:
 				System.exit(0);
@@ -114,3 +126,27 @@ public class TimeTable extends JFrame implements ActionListener {
 		new TimeTable();
 	}
 }
+
+
+/*
+* for (int cycle=1; cycle <=cycles; cycle++) {
+* 	for (int iteration = 1; iteration <= Integer.parseInt(field[3].getText()); iteration++) {
+					courses.iterate(Integer.parseInt(field[4].getText()));
+					draw();
+					clashes = courses.clashesLeft();
+					if (clashes < min) {
+						min = clashes;
+						step = iteration;
+					}
+				}
+	autoassociator.unitUpdate(courses.getTimeSlot(slot))  // toPattern(slot));
+	* or
+	autoassociator.chainUpdate(courses.getTimeSlot(randomslot), iterations);
+* }
+*
+* // courseArray function -  the same as getTimeSlot()  // existing function
+* public int[] toPattern(int slot[]) {
+* 	int result[]  = new int[]
+* 	for
+* }
+* */

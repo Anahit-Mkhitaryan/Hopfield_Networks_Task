@@ -46,7 +46,7 @@ public class Autoassociator {
 
 	public void chainUpdate(int neurons[], int steps) {
 		// TO DO
-		// implements the specified number od update steps
+		// implements the specified number of update steps
 		for (; steps > 0; steps--) {
 			unitUpdate(neurons);
 		}
@@ -72,12 +72,3 @@ public class Autoassociator {
 	}
 
 }
-
-
-/*
-* crs file ic last number is the number of courses
-* hardcode that number
-* stu file y usanoghneri vercrac ararkaneri hamarnery
-*
-* */
-
